@@ -5,11 +5,22 @@ import * as faceapi from 'face-api.js';
 
 const App = () => {
   const canvasRef = useRef();
+  const videoRef = useRef();
+
   useEffect(() => {
     const loadModels = async () => {
       await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
     };
     loadModels();
+  }, []);
+
+  useEffect(() => {
+    const foo = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        'video': true
+      });
+    };
+    foo();
   }, []);
 
   const loadImage = event => {
@@ -33,6 +44,7 @@ const App = () => {
 
   return (
     <div>
+      <video autoPlay ref={videoRef}></video>
       <form>
         <input type="file" accept="image/*" onChange={loadImage} />
       </form>
