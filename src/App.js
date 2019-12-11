@@ -14,6 +14,7 @@ const App = () => {
 
   const loadImage = event => {
     const file = event.target.files[0];
+    if (!file) return false;
     const image = new Image();
     image.onload = async () => {
       const faces = await faceapi.detectAllFaces(image);
@@ -33,7 +34,7 @@ const App = () => {
   return (
     <div>
       <form>
-        <input type="file" onChange={loadImage} />
+        <input type="file" accept="image/*" onChange={loadImage} />
       </form>
       <canvas ref={canvasRef}></canvas>
     </div>
