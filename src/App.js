@@ -15,12 +15,13 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const foo = async () => {
+    const stream = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         'video': true
       });
+      videoRef.current.srcObject = stream;
     };
-    foo();
+    stream();
   }, []);
 
   const loadImage = event => {
