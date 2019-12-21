@@ -15,41 +15,26 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    const context = canvasRef.current.getContext('2d');
     const stream = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         'video': true
       });
       videoRef.current.srcObject = stream;
+      videoRef.current.addEventListener('progress', async () => {
+        context.drawImage(videoRef.current, 0, 0);
+        const faces = await faceapi.detectAllFaces(videoRef.current);
+        faceapi.draw.drawDetections(canvasRef.current, faces);
+      });
     };
-    stream();
+    // TODO: Prevent starting stream before models are loaded
+    window.setTimeout(stream, 5000);
   }, []);
-
-  const loadImage = event => {
-    const file = event.target.files[0];
-    if (!file) return false;
-    const image = new Image();
-    image.onload = async () => {
-      const faces = await faceapi.detectAllFaces(image);
-      const canvas = canvasRef.current;
-      canvas.width = image.width;
-      canvas.height = image.height;
-      canvas.getContext('2d').drawImage(image, 0, 0);
-      faceapi.draw.drawDetections(canvas, faces);
-    }; 
-    const reader = new FileReader();
-    reader.onload = event => {
-      image.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-  };
 
   return (
     <div>
+      <canvas ref={canvasRef} width="800" height="800"></canvas>
       <video autoPlay ref={videoRef}></video>
-      <form>
-        <input type="file" accept="image/*" onChange={loadImage} />
-      </form>
-      <canvas ref={canvasRef}></canvas>
     </div>
   );
 };
