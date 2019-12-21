@@ -24,6 +24,11 @@ const App = () => {
     // Recommended setting for webcams
     const detectorOptions = new faceapi.TinyFaceDetectorOptions({ inputSize: 128 });
 
+    videoRef.current.onloadedmetadata = () => {
+      canvasRef.current.width = videoRef.current.videoWidth;
+      canvasRef.current.height = videoRef.current.videoHeight;
+    };
+
     const stream = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({
         'video': true
@@ -47,7 +52,7 @@ const App = () => {
 
   return (
     <div>
-      <canvas ref={canvasRef} width="800" height="800"></canvas>
+      <canvas ref={canvasRef}></canvas>
       <video autoPlay ref={videoRef}></video>
     </div>
   );
