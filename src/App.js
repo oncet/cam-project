@@ -18,10 +18,6 @@ const App = () => {
   useEffect(() => {
     const context = canvasRef.current.getContext('2d');
 
-    // Flip image horizontally
-    context.translate(canvasRef.current.width, 0);
-    context.scale(-1, 1);
-
     // Recommended setting for webcams
     const detectorOptions = new faceapi.TinyFaceDetectorOptions({ inputSize: 128 });
 
