@@ -10,6 +10,7 @@ const App = () => {
   useEffect(() => {
     const loadModels = async () => {
       await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+      await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
     };
     loadModels();
   }, []);
@@ -38,9 +39,12 @@ const App = () => {
 
       videoRef.current.addEventListener('play', () => {
         (async function loop() {
-          const faces = await faceapi.detectSingleFace(videoRef.current, detectorOptions);
+          const detections = await faceapi.detectSingleFace(videoRef.current, detectorOptions).withFaceLandmarks();
           context.drawImage(videoRef.current, 0, 0);
-          faces && faceapi.draw.drawDetections(canvasRef.current, faces);
+          if (detections) {
+            faceapi.draw.drawDetections(canvasRef.current, detections);
+            faceapi.draw.drawFaceLandmarks(canvasRef.current, detections);
+          }
           setTimeout(loop, 1000 / 300 ); // Drawing at 30 FPS
         })();
       }, 0);
