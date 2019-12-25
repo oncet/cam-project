@@ -10,7 +10,7 @@ const App = () => {
   useEffect(() => {
     const loadModels = async () => {
       await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-      await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+      await faceapi.nets.faceLandmark68TinyNet.loadFromUri('/models');
     };
     loadModels();
   }, []);
@@ -35,7 +35,7 @@ const App = () => {
 
       videoRef.current.addEventListener('play', () => {
         (async function loop() {
-          const detections = await faceapi.detectSingleFace(videoRef.current, detectorOptions).withFaceLandmarks();
+          const detections = await faceapi.detectSingleFace(videoRef.current, detectorOptions).withFaceLandmarks(true);
           context.drawImage(videoRef.current, 0, 0);
           if (detections) {
             faceapi.draw.drawDetections(canvasRef.current, detections);
