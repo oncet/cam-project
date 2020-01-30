@@ -19,7 +19,8 @@ const App = () => {
     const context = canvasRef.current.getContext('2d');
 
     // Recommended setting for webcams
-    const detectorOptions = new faceapi.TinyFaceDetectorOptions({ inputSize: 128 });
+    // See https://github.com/justadudewhohacks/face-api.js/#tinyfacedetectoroptions
+    const detectorOptions = new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
 
     videoRef.current.onloadedmetadata = () => {
       canvasRef.current.width = videoRef.current.videoWidth;
