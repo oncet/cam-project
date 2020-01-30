@@ -42,12 +42,14 @@ const App = () => {
             faceapi.draw.drawDetections(canvasRef.current, detections);
             faceapi.draw.drawFaceLandmarks(canvasRef.current, detections);
           }
-          setTimeout(loop, 1000 / 300 ); // Drawing at 30 FPS
+
+          // Draw at 30 FPS
+          setTimeout(loop, 1000 / 300 );
         })();
       }, 0);
     };
 
-    // TODO: Prevent starting stream before models are loaded
+    // TODO Prevent starting stream before models are loaded
     window.setTimeout(stream, 5000);
   }, []);
 
