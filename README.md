@@ -1,3 +1,3 @@
 # cam-project
 
-Start with `HTTS=true npm start`.
+Start with `HTTPS=true npm start`.
