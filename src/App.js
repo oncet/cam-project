@@ -10,27 +10,30 @@ const App = () => {
 
     videoRef.current.onloadedmetadata = () => {
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera( 50, videoRef.current.videoWidth/videoRef.current.videoHeight, 0.1, 1000 );
   
       const renderer = new THREE.WebGLRenderer();
+
       renderer.setSize( videoRef.current.videoWidth, videoRef.current.videoHeight );
       canvasContainerRef.current.appendChild( renderer.domElement );
   
+      const backgroundGeometry = new THREE.BoxGeometry(videoRef.current.videoWidth, videoRef.current.videoHeight);
       const backgroundTexture = new THREE.VideoTexture( videoRef.current );
       const backgroundMaterial = new THREE.MeshBasicMaterial( { map: backgroundTexture } );
-      const backgroundGeometry = new THREE.BoxGeometry(videoRef.current.videoWidth, videoRef.current.videoHeight);
       const background = new THREE.Mesh( backgroundGeometry, backgroundMaterial );
   
       background.position.z = -500; 
   
       scene.add( background );
   
-      const geometry = new THREE.BoxGeometry();
-      const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-      const cube = new THREE.Mesh( geometry, material );
+      const cubeGeometry = new THREE.BoxGeometry();
+      const cubeMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+      const cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+
       cube.position.z = 5;
   
       scene.add( cube );
+
+      const camera = new THREE.PerspectiveCamera( 50, videoRef.current.videoWidth/videoRef.current.videoHeight, 0.1, 1000 );
   
       camera.position.z = 10;
 
