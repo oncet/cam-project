@@ -2,13 +2,12 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import * as faceapi from 'face-api.js';
 
-const createAssets = (videoRef, canvasContainerRef) => {
+const createAssets = (videoRef) => {
   const scene = new THREE.Scene();
 
   const renderer = new THREE.WebGLRenderer();
 
   renderer.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
-  canvasContainerRef.current.appendChild(renderer.domElement);
 
   const backgroundGeometry = new THREE.BoxGeometry(
     videoRef.current.videoWidth,
@@ -73,6 +72,8 @@ const App = () => {
   useEffect(() => {
     videoRef.current.onloadedmetadata = () => {
       const assets = createAssets(videoRef, canvasContainerRef);
+
+      canvasContainerRef.current.appendChild(assets.renderer.domElement);
 
       const getDetectorOptions = async () => {
         await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
