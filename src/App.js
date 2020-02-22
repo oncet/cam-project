@@ -2,6 +2,11 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import * as faceapi from 'face-api.js';
 
+const getDetectorOptions = async () => {
+  await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+  return new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
+};
+
 const createAssets = (videoRef) => {
   const scene = new THREE.Scene();
 
@@ -46,7 +51,7 @@ const createAssets = (videoRef) => {
   };
 };
 
-const render = (assets, detectPromise) => {
+const render = (assets, detectorOptions, videoRef) => {
   const {
     renderer,
     scene,
@@ -57,7 +62,7 @@ const render = (assets, detectPromise) => {
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
 
-  detectPromise.then((detections) => {
+  faceapi.detectSingleFace(videoRef.current, detectorOptions).then((detections) => {
     // Detections availabe!
     // console.log('detections', detections);
   });
@@ -71,23 +76,13 @@ const App = () => {
 
   useEffect(() => {
     videoRef.current.onloadedmetadata = () => {
-      const assets = createAssets(videoRef, canvasContainerRef);
+      const assets = createAssets(videoRef);
 
       canvasContainerRef.current.appendChild(assets.renderer.domElement);
 
-      const getDetectorOptions = async () => {
-        await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-        return new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
-      };
-
-      const detect = async (detectorOptions) => (
-        faceapi.detectSingleFace(videoRef.current, detectorOptions)
-      );
-
       getDetectorOptions().then((detectorOptions) => {
-        // detect(detectorOptions).then((detections) => console.log('detections', detections));
         const animate = () => {
-          render(assets, detect(detectorOptions));
+          render(assets, detectorOptions, videoRef);
           requestAnimationFrame(() => animate());
         };
         animate();
