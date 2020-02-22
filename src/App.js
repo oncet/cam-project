@@ -97,7 +97,7 @@ const App = () => {
   return (
     <div>
       <div className="canvasContainer" ref={canvasContainerRef} />
-      <video autoPlay loop src="video.mp4" ref={videoRef} />
+      <video muted autoPlay loop src="video.mp4" ref={videoRef} />
     </div>
   );
 };
