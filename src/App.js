@@ -15,7 +15,7 @@ const App = () => {
       videoFilter.getDetectorOptions().then((detectorOptions) => {
         const animate = () => {
           videoFilter.render(assets, detectorOptions, videoRef);
-          requestAnimationFrame(() => animate());
+          requestAnimationFrame(animate);
         };
         animate();
       });
