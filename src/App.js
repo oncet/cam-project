@@ -1,5 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
+import * as faceapi from 'face-api.js';
 import './App.css';
+
+let loadedModels = [];
 
 const App = () => {
   const canvasContainerRef = useRef();
@@ -9,6 +12,13 @@ const App = () => {
   useEffect(() => {
     const loadFilter = async () => {
       const { default: videoFilter } = await import(`./filters/${filter}`); 
+
+      if (loadedModels.indexOf(videoFilter.model) < 0) {
+        await faceapi.nets[videoFilter.model].loadFromUri('/models');
+        loadedModels.push(videoFilter.model);
+      }
+
+      const detectorOptions = videoFilter.getDetectorOptions();
       const assets = videoFilter.createAssets(videoRef);
 
       if (canvasContainerRef.current.firstChild) {
@@ -17,13 +27,11 @@ const App = () => {
         canvasContainerRef.current.appendChild(assets.renderer.domElement);
       }
 
-      videoFilter.getDetectorOptions().then((detectorOptions) => {
-        const animate = () => {
-          videoFilter.render(assets, detectorOptions, videoRef);
-          requestAnimationFrame(animate);
-        };
-        animate();
-      });
+      const animate = () => {
+        videoFilter.render(assets, detectorOptions, videoRef);
+        requestAnimationFrame(animate);
+      };
+      animate();
     };
     loadFilter();
   }, [filter]);

@@ -1,72 +1,74 @@
 import * as THREE from 'three';
 import * as faceapi from 'face-api.js';
 
-const filter = {
-  getDetectorOptions: async () => {
-    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-    return new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
-  },
-  createAssets: (videoRef) => {
-    const scene = new THREE.Scene();
+const getDetectorOptions = () => new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
 
-    const renderer = new THREE.WebGLRenderer();
+const createAssets = (videoRef) => {
+  const scene = new THREE.Scene();
 
-    renderer.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
+  const renderer = new THREE.WebGLRenderer();
 
-    const backgroundGeometry = new THREE.BoxGeometry(
-      videoRef.current.videoWidth,
-      videoRef.current.videoHeight,
-    );
-    const backgroundTexture = new THREE.VideoTexture(videoRef.current);
-    const backgroundMaterial = new THREE.MeshBasicMaterial({ map: backgroundTexture });
-    const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
+  renderer.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
 
-    background.position.z = -500;
+  const backgroundGeometry = new THREE.BoxGeometry(
+    videoRef.current.videoWidth,
+    videoRef.current.videoHeight,
+  );
+  const backgroundTexture = new THREE.VideoTexture(videoRef.current);
+  const backgroundMaterial = new THREE.MeshBasicMaterial({ map: backgroundTexture });
+  const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
 
-    scene.add(background);
+  background.position.z = -500;
 
-    const cubeGeometry = new THREE.BoxGeometry();
-    const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  scene.add(background);
 
-    cube.position.z = 5;
+  const cubeGeometry = new THREE.BoxGeometry();
+  const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
-    scene.add(cube);
+  cube.position.z = 5;
 
-    const camera = new THREE.PerspectiveCamera(
-      50,
-      videoRef.current.videoWidth / videoRef.current.videoHeight,
-      0.1,
-      1000,
-    );
+  scene.add(cube);
 
-    camera.position.z = 10;
+  const camera = new THREE.PerspectiveCamera(
+    50,
+    videoRef.current.videoWidth / videoRef.current.videoHeight,
+    0.1,
+    1000,
+  );
 
-    return {
-      scene,
-      camera,
-      renderer,
-      cube,
-    };
-  },
-  render: (assets, detectorOptions, videoRef) => {
-    const {
-      renderer,
-      scene,
-      camera,
-      cube,
-    } = assets;
+  camera.position.z = 10;
 
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-
-    faceapi.detectSingleFace(videoRef.current, detectorOptions).then((detections) => {
-      // Detections availabe!
-      // console.log('detections', detections);
-    });
-
-    renderer.render(scene, camera);
-  },
+  return {
+    scene,
+    camera,
+    renderer,
+    cube,
+  };
 };
 
-export default filter;
+const render = (assets, detectorOptions, videoRef) => {
+  const {
+    renderer,
+    scene,
+    camera,
+    cube,
+  } = assets;
+
+  cube.rotation.x += 0.01;
+  cube.rotation.y += 0.01;
+
+  faceapi.detectSingleFace(videoRef.current, detectorOptions).then((detections) => {
+    // Detections availabe!
+    // console.log('detections', detections);
+  });
+
+  renderer.render(scene, camera);
+};
+
+export default {
+  getDetectorOptions,
+  createAssets,
+  render,
+  model: 'tinyFaceDetector',
+};
