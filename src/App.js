@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import * as THREE from 'three';
 import * as faceapi from 'face-api.js';
 import './App.css';
 
@@ -7,6 +8,8 @@ const loadedModels = [];
 const App = () => {
   const canvasContainerRef = useRef();
   const videoRef = useRef();
+  const rendererRef = useRef();
+  const animationRequestIdRef = useRef();
   const [filter, setFilter] = useState('myFirstFilter');
 
   useEffect(() => {
@@ -18,18 +21,20 @@ const App = () => {
         loadedModels.push(videoFilter.model);
       }
 
-      const detectorOptions = videoFilter.getDetectorOptions();
-      const assets = videoFilter.createAssets(videoRef);
-
-      if (canvasContainerRef.current.firstChild) {
-        canvasContainerRef.current.replaceChild(assets.renderer.domElement, canvasContainerRef.current.firstChild);
-      } else {
-        canvasContainerRef.current.appendChild(assets.renderer.domElement);
+      if (!rendererRef.current) {
+        rendererRef.current = new THREE.WebGLRenderer();
+        rendererRef.current.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
+        canvasContainerRef.current.appendChild(rendererRef.current.domElement);
       }
 
+      const detectorOptions = videoFilter.getDetectorOptions();
+      const assets = videoFilter.createAssets(videoRef.current);
+
+      cancelAnimationFrame(animationRequestIdRef.current);
+
       const animate = () => {
-        videoFilter.render(assets, detectorOptions, videoRef);
-        requestAnimationFrame(animate);
+        videoFilter.render(assets, detectorOptions, rendererRef.current, videoRef.current);
+        animationRequestIdRef.current = requestAnimationFrame(animate);
       };
       animate();
     };

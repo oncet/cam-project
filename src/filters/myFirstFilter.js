@@ -3,18 +3,14 @@ import * as faceapi from 'face-api.js';
 
 const getDetectorOptions = () => new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
 
-const createAssets = (videoRef) => {
+const createAssets = (video) => {
   const scene = new THREE.Scene();
 
-  const renderer = new THREE.WebGLRenderer();
-
-  renderer.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
-
   const backgroundGeometry = new THREE.BoxGeometry(
-    videoRef.current.videoWidth,
-    videoRef.current.videoHeight,
+    video.videoWidth,
+    video.videoHeight,
   );
-  const backgroundTexture = new THREE.VideoTexture(videoRef.current);
+  const backgroundTexture = new THREE.VideoTexture(video);
   const backgroundMaterial = new THREE.MeshBasicMaterial({ map: backgroundTexture });
   const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
 
@@ -32,7 +28,7 @@ const createAssets = (videoRef) => {
 
   const camera = new THREE.PerspectiveCamera(
     50,
-    videoRef.current.videoWidth / videoRef.current.videoHeight,
+    video.videoWidth / video.videoHeight,
     0.1,
     1000,
   );
@@ -42,14 +38,12 @@ const createAssets = (videoRef) => {
   return {
     scene,
     camera,
-    renderer,
     cube,
   };
 };
 
-const render = (assets, detectorOptions, videoRef) => {
+const render = (assets, detectorOptions, renderer, video) => {
   const {
-    renderer,
     scene,
     camera,
     cube,
@@ -58,7 +52,7 @@ const render = (assets, detectorOptions, videoRef) => {
   cube.rotation.x += 0.01;
   cube.rotation.y += 0.01;
 
-  faceapi.detectSingleFace(videoRef.current, detectorOptions).then((detections) => {
+  faceapi.detectSingleFace(video, detectorOptions).then((detections) => {
     // Detections availabe!
     // console.log('detections', detections);
   });
