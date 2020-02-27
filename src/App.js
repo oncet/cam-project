@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as faceapi from 'face-api.js';
 import './App.css';
 
-let loadedModels = [];
+const loadedModels = [];
 
 const App = () => {
   const canvasContainerRef = useRef();
