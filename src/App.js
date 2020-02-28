@@ -25,6 +25,7 @@ const App = () => {
         rendererRef.current = new THREE.WebGLRenderer();
         videoRef.current = document.createElement('video');
         videoRef.current.src = 'video.mp4';
+        videoRef.current.muted = true;
         videoRef.current.loop = true;
         videoRef.current.onloadedmetadata  = () => {
           rendererRef.current.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
