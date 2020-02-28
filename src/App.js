@@ -23,8 +23,15 @@ const App = () => {
 
       if (!rendererRef.current) {
         rendererRef.current = new THREE.WebGLRenderer();
-        rendererRef.current.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
-        canvasContainerRef.current.appendChild(rendererRef.current.domElement);
+        videoRef.current = document.createElement('video');
+        videoRef.current.src = 'video.mp4';
+        videoRef.current.loop = true;
+        videoRef.current.onloadedmetadata  = () => {
+          rendererRef.current.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
+          canvasContainerRef.current.appendChild(rendererRef.current.domElement);
+        }
+        videoRef.current.load();
+        await videoRef.current.play();
       }
 
       const detectorOptions = videoFilter.getDetectorOptions();
@@ -48,7 +55,6 @@ const App = () => {
         <option value="mySecondFilter">My Second Filter</option>
       </select>
       <div className="canvasContainer" ref={canvasContainerRef} />
-      <video muted autoPlay loop src="video.mp4" ref={videoRef} />
     </div>
   );
 };
