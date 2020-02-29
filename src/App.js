@@ -10,40 +10,73 @@ const App = () => {
   const videoRef = useRef();
   const rendererRef = useRef();
   const animationRequestIdRef = useRef();
+  const backgroundRef = useRef();
+  const cameraRef = useRef();
   const [filter, setFilter] = useState('myFirstFilter');
 
   useEffect(() => {
     const loadFilter = async () => {
       const { default: videoFilter } = await import(`./filters/${filter}`); 
 
-      if (loadedModels.indexOf(videoFilter.model) < 0) {
-        await faceapi.nets[videoFilter.model].loadFromUri('/models');
-        loadedModels.push(videoFilter.model);
+      if (!videoFilter.models.every(model => loadedModels.includes(model))) {
+        await Promise.all(videoFilter.models.map(async model => {
+          if (!loadedModels.includes(model)) {
+            await faceapi.nets[model].loadFromUri('/models');
+            loadedModels.push(model);
+          }
+        }));
       }
 
       if (!rendererRef.current) {
         rendererRef.current = new THREE.WebGLRenderer();
+
         videoRef.current = document.createElement('video');
         videoRef.current.src = 'video.mp4';
         videoRef.current.muted = true;
         videoRef.current.loop = true;
+
         videoRef.current.onloadedmetadata  = () => {
           rendererRef.current.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
           canvasContainerRef.current.appendChild(rendererRef.current.domElement);
         }
+
         videoRef.current.load();
+
         await videoRef.current.play();
+
+        const backgroundGeometry = new THREE.BoxGeometry(
+          videoRef.current.videoWidth,
+          videoRef.current.videoHeight,
+        );
+
+        const backgroundTexture = new THREE.VideoTexture(videoRef.current);
+
+        const backgroundMaterial = new THREE.MeshBasicMaterial({ map: backgroundTexture });
+
+        backgroundRef.current = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
+        backgroundRef.current.position.z = -2050;
+
+        cameraRef.current = new THREE.PerspectiveCamera(
+          50,
+          videoRef.current.videoWidth / videoRef.current.videoHeight,
+          0.1,
+          5000,
+        );
+
+        cameraRef.current.position.z = 10;
       }
 
-      const detectorOptions = videoFilter.getDetectorOptions();
-      const assets = videoFilter.createAssets(videoRef.current);
+      const assets = videoFilter.createAssets();
+
+      assets.scene.add(backgroundRef.current);
 
       cancelAnimationFrame(animationRequestIdRef.current);
 
       const animate = () => {
-        videoFilter.render(assets, detectorOptions, rendererRef.current, videoRef.current);
+        videoFilter.render(assets, cameraRef.current, rendererRef.current, videoRef.current);
         animationRequestIdRef.current = requestAnimationFrame(animate);
       };
+
       animate();
     };
     loadFilter();

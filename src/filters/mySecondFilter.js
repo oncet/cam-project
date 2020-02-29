@@ -1,22 +1,8 @@
 import * as THREE from 'three';
 import * as faceapi from 'face-api.js';
 
-const getDetectorOptions = () => new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
-
-const createAssets = (video) => {
+const createAssets = () => {
   const scene = new THREE.Scene();
-
-  const backgroundGeometry = new THREE.BoxGeometry(
-    video.videoWidth,
-    video.videoHeight,
-  );
-  const backgroundTexture = new THREE.VideoTexture(video);
-  const backgroundMaterial = new THREE.MeshBasicMaterial({ map: backgroundTexture });
-  const background = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-
-  background.position.z = -500;
-
-  scene.add(background);
 
   const cubeGeometry = new THREE.BoxGeometry();
   const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x713dc3 });
@@ -26,26 +12,19 @@ const createAssets = (video) => {
 
   scene.add(cube);
 
-  const camera = new THREE.PerspectiveCamera(
-    50,
-    video.videoWidth / video.videoHeight,
-    0.1,
-    1000,
-  );
-
-  camera.position.z = 10;
+  const detectorOptions = new faceapi.TinyFaceDetectorOptions({ inputSize: 320 });
 
   return {
+    detectorOptions,
     scene,
-    camera,
     cube,
   };
 };
 
-const render = (assets, detectorOptions, renderer, video) => {
+const render = (assets, camera, renderer, video) => {
   const {
+    detectorOptions,
     scene,
-    camera,
     cube,
   } = assets;
 
@@ -61,8 +40,10 @@ const render = (assets, detectorOptions, renderer, video) => {
 };
 
 export default {
-  getDetectorOptions,
   createAssets,
   render,
-  model: 'tinyFaceDetector',
+  models: [
+    'tinyFaceDetector',
+    'faceLandmark68TinyNet',
+  ],
 };
