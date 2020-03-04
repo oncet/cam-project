@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
 import * as faceapi from 'face-api.js';
 import './App.css';
+import helpers from './helpers.js';
 
 const loadedModels = [];
 
@@ -30,10 +31,7 @@ const App = () => {
       if (!rendererRef.current) {
         rendererRef.current = new THREE.WebGLRenderer();
 
-        videoRef.current = document.createElement('video');
-        videoRef.current.src = 'video.mp4';
-        videoRef.current.muted = true;
-        videoRef.current.loop = true;
+        videoRef.current = helpers.createVideo();
 
         videoRef.current.onloadedmetadata  = () => {
           rendererRef.current.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
@@ -44,26 +42,9 @@ const App = () => {
 
         await videoRef.current.play();
 
-        const backgroundGeometry = new THREE.BoxGeometry(
-          videoRef.current.videoWidth,
-          videoRef.current.videoHeight,
-        );
+        backgroundRef.current = helpers.createBackground(videoRef.current);
 
-        const backgroundTexture = new THREE.VideoTexture(videoRef.current);
-
-        const backgroundMaterial = new THREE.MeshBasicMaterial({ map: backgroundTexture });
-
-        backgroundRef.current = new THREE.Mesh(backgroundGeometry, backgroundMaterial);
-        backgroundRef.current.position.z = -2050;
-
-        cameraRef.current = new THREE.PerspectiveCamera(
-          50,
-          videoRef.current.videoWidth / videoRef.current.videoHeight,
-          0.1,
-          5000,
-        );
-
-        cameraRef.current.position.z = 10;
+        cameraRef.current = helpers.createCamera(videoRef.current);
       }
 
       const assets = videoFilter.createAssets();
