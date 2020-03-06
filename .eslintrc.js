@@ -22,6 +22,18 @@ module.exports = {
     'react',
   ],
   rules: {
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
-  },
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [{
+          "name": "styled-components",
+          "message": "Please import from styled-components/macro."
+        }],
+        "patterns": [
+          "!styled-components/macro"
+        ]
+      }
+    ]
+  }
 };
