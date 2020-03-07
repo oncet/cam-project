@@ -64,10 +64,7 @@ const VideoRenderer = ({ filter }) => {
   }, [filter]);
 
   return (
-    <div
-      className="canvasContainer"
-      ref={canvasContainerRef}
-    />
+    <div ref={canvasContainerRef} />
   );
 };
 

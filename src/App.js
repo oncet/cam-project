@@ -18,7 +18,6 @@ const App = () => {
         <option value="mySecondFilter">My Second Filter</option>
       </select>
       <VideoRenderer
-        className="canvasContainer"
         filter={filter}
       />
     </MainContainer>
