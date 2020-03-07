@@ -1,5 +1,7 @@
+// import React from 'react';
 import * as THREE from 'three';
 
+// This works
 const createVideo = () => {
   const video = document.createElement('video');
   video.src = 'video.mp4';
@@ -8,6 +10,15 @@ const createVideo = () => {
 
   return video;
 };
+
+// This doesn't
+// const createVideo = () => (
+//   <video
+//     src="video.mp4"
+//     muted
+//     loop
+//   />
+// );
 
 const createBackground = (video) => {
   const backgroundGeometry = new THREE.BoxGeometry(

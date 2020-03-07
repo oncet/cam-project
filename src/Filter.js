@@ -6,13 +6,13 @@ import helpers from './helpers.js';
 
 const loadedModels = [];
 
-const Filter = ({ createVideo, filter }) => {
+const Filter = ({ filter }) => {
   const animationRequestIdRef = useRef();
   const backgroundRef = useRef();
   const cameraRef = useRef();
   const canvasContainerRef = useRef();
   const rendererRef = useRef();
-  const videoRef = useRef(createVideo());
+  const videoRef = useRef(helpers.createVideo());
   console.log(videoRef.current);
   useEffect(() => {
     const loadFilter = async () => {
@@ -39,8 +39,8 @@ const Filter = ({ createVideo, filter }) => {
 
         await videoRef.current.play();
 
-        backgroundRef.current = helpers.createBackground(videoRef);
-        cameraRef.current = helpers.createCamera(videoRef);
+        backgroundRef.current = helpers.createBackground(videoRef.current);
+        cameraRef.current = helpers.createCamera(videoRef.current);
       }
 
       const assets = videoFilter.createAssets();
@@ -50,7 +50,7 @@ const Filter = ({ createVideo, filter }) => {
       cancelAnimationFrame(animationRequestIdRef.current);
 
       const animate = () => {
-        videoFilter.render(assets, cameraRef.current, rendererRef.current, videoRef);
+        videoFilter.render(assets, cameraRef.current, rendererRef.current, videoRef.current);
         animationRequestIdRef.current = requestAnimationFrame(animate);
       };
 

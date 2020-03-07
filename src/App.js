@@ -3,14 +3,6 @@ import './App.css';
 
 import Filter from './Filter';
 
-const createVideo = () => (
-  <video
-    src="video.mp4"
-    muted
-    loop
-  />
-);
-
 const App = () => {
   const [filter, setFilter] = useState('myFirstFilter');
   return (
@@ -21,7 +13,6 @@ const App = () => {
       </select>
       <Filter
         filter={filter}
-        createVideo={createVideo}
       />
     </div>
   );
