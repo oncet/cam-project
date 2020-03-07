@@ -34,7 +34,7 @@ const VideoRenderer = ({ filter }) => {
         videoRef.current = helpers.createVideo();
 
         videoRef.current.onloadedmetadata  = () => {
-          rendererRef.current.setSize(videoRef.current.videoWidth, videoRef.current.videoHeight);
+          rendererRef.current.setSize(videoRef.current.videoWidth / 2, videoRef.current.videoHeight / 2);
           canvasContainerRef.current.appendChild(rendererRef.current.domElement);
         }
 
