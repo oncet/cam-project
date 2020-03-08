@@ -54,7 +54,7 @@ const VideoRenderer = ({ filter }) => {
       cancelAnimationFrame(animationRequestIdRef.current);
 
       const animate = () => {
-        videoFilter.render(assets, cameraRef.current, rendererRef.current, videoRef.current);
+        videoFilter.render(assets, backgroundRef.current, cameraRef.current, rendererRef.current, videoRef.current);
         animationRequestIdRef.current = requestAnimationFrame(animate);
       };
 

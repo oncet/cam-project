@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as faceapi from 'face-api.js';
+import helpers from '../helpers';
 
 const createAssets = () => {
   const scene = new THREE.Scene();
@@ -8,7 +9,7 @@ const createAssets = () => {
   const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
   const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 
-  cube.position.z = -2000;
+  cube.position.z = -2050;
 
   scene.add(cube);
 
@@ -21,19 +22,18 @@ const createAssets = () => {
   };
 };
 
-const render = (assets, camera, renderer, video) => {
+const render = (assets, background, camera, renderer, video) => {
   const {
     detectorOptions,
     scene,
     cube,
   } = assets;
 
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
-
   faceapi.detectSingleFace(video, detectorOptions).then((detections) => {
     if (detections) {
-      // Detections availabe...
+      const faceCenter = helpers.getFaceCenter(detections, background);
+      cube.position.x = faceCenter.x;
+      cube.position.y = faceCenter.y;
     }
   });
 

@@ -38,8 +38,16 @@ const createCamera = (video) => {
   return camera;
 };
 
+const getFaceCenter = (detections, background) => ({
+  x: (detections.box.x + detections.box.width / 2) - background.geometry.parameters.width / 2,
+  y: (
+    (detections.box.y + detections.box.height / 2) - background.geometry.parameters.height / 2
+  ) * -1,
+});
+
 export default {
   createVideo,
   createBackground,
   createCamera,
+  getFaceCenter,
 };

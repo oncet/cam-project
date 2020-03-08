@@ -21,7 +21,7 @@ const createAssets = () => {
   };
 };
 
-const render = (assets, camera, renderer, video) => {
+const render = (assets, background, camera, renderer, video) => {
   const {
     detectorOptions,
     scene,
