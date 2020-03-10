@@ -1,32 +1,20 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import videoFilter from './filters/myFirstFilter';
+import VideoRenderer from './VideoRenderer';
 
 const App = () => {
-  const canvasContainerRef = useRef();
-  const videoRef = useRef();
-
-  useEffect(() => {
-    videoRef.current.onloadedmetadata = () => {
-      const assets = videoFilter.createAssets(videoRef);
-
-      canvasContainerRef.current.appendChild(assets.renderer.domElement);
-
-      videoFilter.getDetectorOptions().then((detectorOptions) => {
-        const animate = () => {
-          videoFilter.render(assets, detectorOptions, videoRef);
-          requestAnimationFrame(animate);
-        };
-        animate();
-      });
-    };
-  }, []);
+  const [filter, setFilter] = useState('myFirstFilter');
 
   return (
-    <div>
-      <div className="canvasContainer" ref={canvasContainerRef} />
-      <video muted autoPlay loop src="video.mp4" ref={videoRef} />
-    </div>
+    <>
+      <select onChange={(e) => setFilter(e.target.value)}>
+        <option value="myFirstFilter">My First Filter</option>
+        <option value="mySecondFilter">My Second Filter</option>
+      </select>
+      <VideoRenderer
+        filter={filter}
+      />
+    </>
   );
 };
 
